@@ -43,6 +43,8 @@ class HandleInertiaRequests extends Middleware
                 ];
             },
             'showingMobileMenu' => false,
+            'user.roles' => $request->user() ? $request->user()->roles->pluck('name') : [],
+            'user.permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : [],
         ]);
     }
 }
