@@ -5,7 +5,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
+use App\Http\Controllers\SensorController;
+use App\Http\Controllers\AlertController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,8 +35,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
     Route::get('users', [UserController::class, 'index'])->name('users.index');
-    Route::resource('sensors', 'BlogController');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::resource('sensors', SensorController::class);
+    Route::resource('alerts', AlertController::class);
+    Route::get('/profile', action: [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
