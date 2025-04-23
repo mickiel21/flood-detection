@@ -26,14 +26,14 @@ const deleteTrade = (id) => {
 </script>
 <template>
 
-    <Head title="Sensors" />
+    <Head title="Alerts" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"><a
-                    :href="route('alerts.index')">Sensors</a>
+                    :href="route('alerts.index')">Alerts</a>
                 <PrimaryLink :href="route('alerts.index', { filter: 'only' })" class="max-w-xl ml-2">View Trashed
                 </PrimaryLink>
-                <PrimaryLink :href="route('alerts.create')" class="max-w-xl ml-2">Add Sensor</PrimaryLink>
+                <PrimaryLink :href="route('alerts.create')" class="max-w-xl ml-2">Add Alerts</PrimaryLink>
             </h2>
         </template>
         <div v-if="props.message"
@@ -53,25 +53,17 @@ const deleteTrade = (id) => {
                             ID</th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            NAME</th>
+                            SENSOR NAME</th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            TYPE</th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            LOCATION</th>
+                            Type</th>
                         <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            STATUS</th>
+                            SEVERITY</th>
                         <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            MIN VALUE</th>
-                        <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            MAX VALUE</th>
-                        <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            INSTALLATION DATE</th>
+                            MESSAGE</th>
+                        
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Actions</th>
@@ -83,25 +75,16 @@ const deleteTrade = (id) => {
                             <p class="text-gray-900 whitespace-no-wrap">{{ entry.id }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.name }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.sensor.name }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ entry.type }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.location }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.severity }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.status }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.min_value }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.max_value }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.installation_date }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.message }}</p>
                         </td>
                         
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">

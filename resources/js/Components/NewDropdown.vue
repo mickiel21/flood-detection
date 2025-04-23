@@ -4,15 +4,21 @@
         :value="modelValue" 
         @change="$emit('update:modelValue', $event.target.value)" 
         ref="input">
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
+        <option value="" disabled>Select an option</option>
+        <option v-for="option in options" :key="option" :value="option">
+            {{ option }}
+        </option>
     </select>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue';
 
-defineProps(['modelValue']);
+defineProps({
+    modelValue: String, // Bound value
+    options: Array // Dynamic list of options
+});
+
 defineEmits(['update:modelValue']);
 
 const input = ref(null);

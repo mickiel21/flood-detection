@@ -22,7 +22,7 @@ const form = useForm({
     installation_date: props.sensor.installation_date, // Installation date
 });
 
-
+const statusOptions = ['active', 'inactive']; // Severity dropdown options
 const submit = () => {
      form.put(route("sensors.update", props.sensor.id));
 };
@@ -83,16 +83,7 @@ const submit = () => {
                         </div>
                         <div>
                             <InputLabel for="status" value="Status" />
-
-                           
-
-                            <NewDropdown
-                                id="status"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.status"
-                                required
-                            />
+                            <NewDropdown id="severity" class="mt-1 block w-full" v-model="form.status" :options="statusOptions" required />
 
                             <InputError class="mt-2" :message="form.errors.status" />
                         </div>

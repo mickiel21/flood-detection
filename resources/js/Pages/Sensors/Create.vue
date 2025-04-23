@@ -17,7 +17,7 @@ const form = useForm({
     max_value : '',
     installation_date : '',
 });
-
+const statusOptions = ['active', 'inactive']; // Severity dropdown options
 const submit = () => {
     form.post(route("sensors.store"));
 };
@@ -86,7 +86,7 @@ const submit = () => {
                                 type="text"
                                 class="mt-1 block w-full"
                                 v-model="form.status"
-                                
+                                :options="statusOptions"
                             />
 
                             <InputError class="mt-2" :message="form.errors.status" />

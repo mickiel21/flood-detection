@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('severity'); // Severity (e.g., high, medium, low)
             $table->text('message'); // Alert message
             $table->timestamps();
-        
+            $table->softDeletes();
             // Foreign key constraint
             $table->foreign('sensor_id')->references('id')->on('sensors')->onDelete('cascade');
         });

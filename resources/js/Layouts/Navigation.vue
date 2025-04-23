@@ -56,7 +56,7 @@
             Sensor Management
         </nav-link>
 
-        <nav-link :href="route('users.index')" :active="route().current('users.index')">
+        <nav-link :href="route('alerts.index')" :active="route().current('alerts.index')">
             <template #icon>
                 <i class="fa-solid fa-bell" style="color: #ffffff;"></i>
             </template>
