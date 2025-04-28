@@ -11,6 +11,13 @@ use App\Models\CustomPermission as Permission;
 
 class RoleController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('permission:read role', ['only' => ['index', 'show']]); // Allow viewing roles
+        $this->middleware('permission:write role', ['only' => ['create', 'store']]); // Allow creating roles
+        $this->middleware('permission:edit role', ['only' => ['edit', 'update']]); // Allow editing roles
+        $this->middleware('permission:delete role', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */

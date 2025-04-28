@@ -11,13 +11,20 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 class UserController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('permission:read user', ['only' => ['index', 'show']]); // Allow viewing users
+        $this->middleware('permission:write user', ['only' => ['create', 'store']]); // Allow creating users
+        $this->middleware('permission:edit user', ['only' => ['edit', 'update']]); // Allow editing users
+        $this->middleware('permission:delete user', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         $users = User::query()
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('id', 'ASC')
             ->whereNull('deleted_at')
             ->filter($request->only('filter'))
             ->paginate(5)

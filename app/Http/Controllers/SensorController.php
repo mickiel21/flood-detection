@@ -9,6 +9,12 @@ use App\Models\Sensor;
 
 class SensorController extends Controller
 {
+    public function __construct(){
+        $this->middleware('permission:read sensor', ['only' => ['index', 'show']]); // Allow viewing sensors
+        $this->middleware('permission:write sensor', ['only' => ['create', 'store']]); // Allow creating sensors
+        $this->middleware('permission:edit sensor', ['only' => ['edit', 'update']]); // Allow editing sensors
+        $this->middleware('permission:delete sensor', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */

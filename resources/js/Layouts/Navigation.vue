@@ -14,7 +14,7 @@
     </div>
 
     <nav class="mt-10" x-data="{ isMultiLevelMenuOpen: false }">
-        <nav-link :href="route('dashboard')" :active="route().current('dashboard')">
+        <nav-link :href="route('dashboard')" :active="route().current('dashboard')" v-if="$page.props.user.permissions.includes('read dashboard')">
             <template #icon>
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
@@ -24,21 +24,21 @@
             Dashboard
         </nav-link>
 
-        <nav-link :href="route('users.index')" :active="route().current('users.index')">
+        <nav-link :href="route('users.index')" :active="route().current('users.index')" v-if="$page.props.user.permissions.includes('read user')">
             <template #icon>
                 <i class="fas fa-user"></i>
             </template>
             User Management
         </nav-link>
 
-        <nav-link :href="route('roles.index')" :active="route().current('roles.index')">
+        <nav-link :href="route('roles.index')" :active="route().current('roles.index')" v-if="$page.props.user.permissions.includes('read role')">
             <template #icon>
                 <i class="fa-solid fa-circle-user"></i>
             </template>
             Roles
         </nav-link>
 
-        <nav-link :href="route('permissions.index')" :active="route().current('permissions.index')">
+        <nav-link :href="route('permissions.index')" :active="route().current('permissions.index')" v-if="$page.props.user.permissions.includes('read permission')">
             <template #icon>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -47,7 +47,7 @@
             Permissions
         </nav-link>
 
-        <nav-link :href="route('sensors.index')" :active="route().current('sensors.index')">
+        <nav-link :href="route('sensors.index')" :active="route().current('sensors.index')" v-if="$page.props.user.permissions.includes('read sensor')">
             <template #icon>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -56,7 +56,7 @@
             Sensor Management
         </nav-link>
 
-        <nav-link :href="route('alerts.index')" :active="route().current('alerts.index')">
+        <nav-link :href="route('alerts.index')" :active="route().current('alerts.index')" v-if="$page.props.user.permissions.includes('read alert')">
             <template #icon>
                 <i class="fa-solid fa-bell" style="color: #ffffff;"></i>
             </template>

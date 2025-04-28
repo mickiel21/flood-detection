@@ -21,10 +21,17 @@ class UserSeeder extends Seeder
                 'role' => 'admin',
             ],
             [
-                'name' => 'John',
-                'email' => 'john@codingoblin.com',
-                'password' => 'password2',
-                'role' => 'standard',
+                'name' => 'authority',
+                'email' => 'jmcastejon04@gmail.com',
+                'password' => 'password',
+                'role' => 'authority',
+            ],
+
+            [
+                'name' => 'public',
+                'email' => 'hero21@gmail.com',
+                'password' => 'password',
+                'role' => 'public',
             ]
         ];
 

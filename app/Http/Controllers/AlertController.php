@@ -9,13 +9,10 @@ use App\Models\Sensor;
 class AlertController extends Controller
 {
     public function __construct(){
-        $this->middleware('permission:alert list|alert create|alert edit|alert delete', ['only' => ['index','show']]);
-
-         $this->middleware('permission:alert create', ['only' => ['create','store']]);
-
-         $this->middleware('permission:alert edit', ['only' => ['edit','update']]);
-
-         $this->middleware('permission:alert delete', ['only' => ['destroy']]);
+        $this->middleware('permission:read alert', ['only' => ['index', 'show']]); // Allow viewing alerts
+        $this->middleware('permission:write alert', ['only' => ['create', 'store']]); // Allow creating alerts
+        $this->middleware('permission:edit alert', ['only' => ['edit', 'update']]); // Allow editing alerts
+        $this->middleware('permission:delete alert', ['only' => ['destroy']]);
     }
     public function index(Request $request)
     {

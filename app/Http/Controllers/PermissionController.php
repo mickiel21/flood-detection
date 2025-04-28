@@ -11,6 +11,13 @@ use App\Models\CustomPermission as Permission;
 
 class PermissionController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('permission:read permission', ['only' => ['index', 'show']]); // Allow viewing permissions
+        $this->middleware('permission:write permission', ['only' => ['create', 'store']]); // Allow creating permissions
+        $this->middleware('permission:edit permission', ['only' => ['edit', 'update']]); // Allow editing permissions
+        $this->middleware('permission:delete permission', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -19,7 +26,7 @@ class PermissionController extends Controller
         $permission = Permission::query()
             ->orderBy('created_at', 'DESC')
             ->filter($request->only('filter'))
-            ->paginate(5)
+            ->paginate(perPage: 10)
             ->withQueryString();
       
         return Inertia::render('Permissions/Index', [

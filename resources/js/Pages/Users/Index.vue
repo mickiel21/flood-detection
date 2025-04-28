@@ -73,10 +73,10 @@ const deleteTrade = (id) => {
                         </td>
                         
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <PrimaryLink v-if="entry.deleted_at == null" :href="route('users.edit', { 'id': entry.id })"
+                            <PrimaryLink v-if="entry.deleted_at == null && $page.props.user.permissions.includes('edit user') " :href="route('users.edit', { 'id': entry.id })"
                                 class="max-w-xl ml-2">EDIT
                             </PrimaryLink>
-                            <DangerButton class="ml-3" @click="deleteTrade(entry.id)" v-if="entry.deleted_at == null">
+                            <DangerButton class="ml-3" @click="deleteTrade(entry.id)" v-if="entry.deleted_at == null && $page.props.user.permissions.includes('delete user')">
                                 Trash
                             </DangerButton>
                         </td>
