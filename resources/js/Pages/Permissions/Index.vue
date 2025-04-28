@@ -31,8 +31,6 @@ const deleteTrade = (id) => {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"><a
                     :href="route('permissions.index')">Permissions</a>
-                <PrimaryLink :href="route('permissions.index', { filter: 'only' })" class="max-w-xl ml-2">View Trashed
-                </PrimaryLink>
                 <PrimaryLink :href="route('permissions.create')" class="max-w-xl ml-2">Add Permission</PrimaryLink>
             </h2>
         </template>

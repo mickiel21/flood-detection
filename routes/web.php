@@ -20,6 +20,7 @@ use App\Http\Controllers\RoleController;
 |
 */
 
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -39,7 +40,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::resource('users', UserController::class);
     Route::resource('sensors', SensorController::class);
     Route::resource('alerts', AlertController::class);
     Route::resource('permissions', PermissionController::class);

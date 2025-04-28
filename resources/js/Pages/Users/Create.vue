@@ -6,27 +6,27 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import NewDropdown from '@/Components/NewDropdown.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
-import CustomCheckbox from '@/Components/CustomCheckbox.vue';
 
-defineProps({
-    permissions: Array, // Passing permissions from the backend
+const props = defineProps({
+    roles : Object
 });
-
 const form = useForm({
     name: '',
-    permissions: [],
+    email: '',
+    role: '',
+    password: '',
+    password_confirmation: '',
 });
-const statusOptions = ['active', 'inactive']; // Severity dropdown options
 const submit = () => {
-    form.post(route("roles.store"));
+    form.post(route("users.store"));
 };
 </script>
 <template>
-    <Head title="Create Role" />
+    <Head title="Create User" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Role</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create User</h2>
         </template>
 
         <div class="py-12">
@@ -47,24 +47,43 @@ const submit = () => {
 
                             <InputError class="mt-2" :message="form.errors.name" />
                         </div>
+
                         <div>
-                            <InputLabel for="permissions" value="Permissions" />
-                            <div class="mt-2 space-y-2">
-                             
-                               <div :class="permissions.length > 5 ? 'grid grid-cols-2 gap-4' : 'space-y-2'">
-                                    <div v-for="permission in permissions" :key="permission.id">
-                                        <CustomCheckbox :value="permission.name" :checked="form.permissions" @update:checked="form.permissions = $event" />
-                                        <label class="ml-2">{{ permission.name }}</label>
-                                    </div>
-                                </div>
+                            <InputLabel for="type" value="Email" />
 
+                            <TextInput
+                                id="type"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.email"
+                                required 
+                                autofocus
+                            />
 
-                            </div>
-                            <InputError class="mt-2" :message="form.errors.permissions" />
+                            <InputError class="mt-2" :message="form.errors.email" />
+                        </div>
+                        <div class="mt-3">
+                            <InputLabel for="password" value="Password" />
+                            <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="new-password" />
+                            <InputError class="mt-2" :message="form.errors.password" />
                         </div>
 
-                       
-                       
+                        <div class="mt-3">
+                            <InputLabel for="password_confirmation" value="Confirm Password" />
+                            <TextInput id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required autocomplete="new-password" />
+                            <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                        </div>
+                        <!-- Role Dropdown -->
+                        <div>
+                            <InputLabel for="Role" value="Role" />
+                            <NewDropdown
+                                id="role"
+                                class="mt-1 block w-full"
+                                v-model="form.role"
+                                :options="roles"
+                            />
+                            <InputError class="mt-2" :message="form.errors.role" />
+                        </div>
 
                         <div class="flex items-center gap-4">
                             <PrimaryButton :disabled="form.processing">Save</PrimaryButton>

@@ -1,177 +1,155 @@
-<template>
-  <div class="app-main" id="parent">
-    <div class="header">
-      <h4>Get Weather</h4>
-    </div>
-    <div class="searchInputBox">
-      <input type="text" v-model="city" class="input-box" placeholder="Enter city name" @keyup.enter="getWeatherReport" />
-      <button class="btn" @click="getWeatherReport">Search</button>
-    </div>
-    <div class="weather-body" ref="weatherBody">
-      <div v-if="weatherData">
-        <div class="location-deatils">
-          <div class="city">{{ weatherData.name }}, {{ weatherData.sys.country }}</div>
-          <div class="date">{{ dateManage(new Date()) }}</div>
-        </div>
-        <div class="weather-status">
-          <div class="temp">{{ Math.round(weatherData.main.temp) }}°C</div>
-          <div class="weather">
-            {{ weatherData.weather[0].main }}
-            <i :class="getIconClass(weatherData.weather[0].main)"></i>
-          </div>
-          <div class="min-max">{{ Math.floor(weatherData.main.temp_min) }}°C (min) / {{ Math.ceil(weatherData.main.temp_max) }}°C (max)</div>
-          <div id="updated_on">Updated as of {{ getTime(new Date()) }}</div>
-        </div>
-        <hr />
-        <div class="day-details">
-          <div class="basic">
-            Feels like {{ weatherData.main.feels_like }}°C | Humidity {{ weatherData.main.humidity }}% <br />
-            Pressure {{ weatherData.main.pressure }} mb | Wind {{ weatherData.wind.speed }} KMPH
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
+<script setup>
+import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue'; 
 
-<script>
-export default {
-  name: 'Dashboard',
-  data() {
-    return {
-      city: '',
-      weatherData: null,
-      weatherApi: {
-        key: '5174a4c980abc22f0dc589db984742cf',
-        baseUrl: 'https://api.openweathermap.org/data/2.5/weather'
-      }
-    };
-  },
-  methods: {
-    async getWeatherReport() {
-      if (!this.city.trim()) {
-        swal('Empty Input', 'Please enter any city', 'error');
-        return;
-      }
-      try {
-        const response = await fetch(`${this.weatherApi.baseUrl}?q=${this.city}&appid=${this.weatherApi.key}&units=metric`);
-        const data = await response.json();
+const imagePath = ref('/images/Sleeping-all-Day-unscreen.gif');
 
-        if (data.cod === '404') {
-          swal("Bad Input", "Entered city didn't match", "warning");
-          this.city = '';
-          return;
-        }
-
-        this.weatherData = data;
-        this.changeBg(data.weather[0].main);
-        this.city = '';
-      } catch (error) {
-        swal('Error', 'Something went wrong fetching the weather.', 'error');
-      }
+defineProps({
+    canLogin: {
+        type: Boolean,
     },
-    getTime(date) {
-      const hour = this.addZero(date.getHours());
-      const minute = this.addZero(date.getMinutes());
-      return `${hour}:${minute}`;
+    canRegister: {
+        type: Boolean,
     },
-    dateManage(dateArg) {
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      return `${dateArg.getDate()} ${months[dateArg.getMonth()]} (${days[dateArg.getDay()]}) , ${dateArg.getFullYear()}`;
-    },
-    changeBg(status) {
-      const images = {
-        Clouds: 'clouds.jpeg',
-        Rain: 'rain.jpeg',
-        Clear: 'clear.jpeg',
-        Snow: 'snow.jpeg',
-        Sunny: 'sunny.jpeg',
-        Thunderstorm: 'thunder.jpeg',
-        Drizzle: 'drizzle.jpeg',
-        Mist: 'mist.jpeg',
-        Haze: 'mist.jpeg',
-        Fog: 'mist.jpeg'
-      };
-      const image = images[status] || 'bg1.jpeg';
-      document.body.style.backgroundImage = `url("images/${image}")`;
-    },
-    getIconClass(weatherMain) {
-      const icons = {
-        Rain: 'fas fa-cloud-showers-heavy',
-        Clouds: 'fas fa-cloud',
-        Clear: 'fas fa-cloud-sun',
-        Snow: 'fas fa-snowman',
-        Sunny: 'fas fa-sun',
-        Mist: 'fas fa-smog',
-        Thunderstorm: 'fas fa-bolt',
-        Drizzle: 'fas fa-cloud-rain'
-      };
-      return icons[weatherMain] || 'fas fa-cloud-sun';
-    },
-    addZero(i) {
-      return i < 10 ? '0' + i : i;
-    }
-  }
-};
+});
 </script>
 
+<template>
+    <Head title="Welcome" />
+
+    <div
+        
+    >
+        <div v-if="canLogin" class="sm:fixed sm:top-0 sm:right-0 p-6 text-end">
+            <Link
+                v-if="$page.props.auth.user"
+                :href="route('dashboard')"
+                class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                >Dashboard</Link
+            >
+
+            <template v-else>
+                <Link
+                    :href="route('login')"
+                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    >Log in</Link
+                >
+
+                <Link
+                    v-if="canRegister"
+                    :href="route('register')"
+                    class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    >Register</Link
+                >
+            </template>
+        </div>
+
+        <div class="max-w-7xl mx-auto p-6 lg:p-8">
+            <div class="outer-bg">
+
+                <div class="over-lay">
+
+                <div class="bg-img"></div>
+
+                <div class="centered-box">
+
+                    <div class="inner-bg">
+                    <img :src="imagePath" class="logo">
+                    </div>
+
+                    <div class="content">
+                    <h2>Weather<br>Forecasts</h2>
+                    </div>
+
+                    <Link :href="route('main')">
+                        <button id="btn" class="btn">Get Started</button>
+                    </Link>
+
+                    
+                    <p class="para">Check any weather</p>
+                </div>
+
+                </div>
+
+                </div>
+        </div>
+    </div>
+</template>
+
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Ubuntu:wght@300&display=swap');
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.bg-dots-darker {
+    background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E");
 }
-body {
-  font-family: 'Roboto', sans-serif;
-  background-image: url("images/bg.jpg");
-  min-height: 92vh;
-  background-repeat: no-repeat;
-  background-position: bottom center;
-  background-size: cover;
+@media (prefers-color-scheme: dark) {
+    .dark\:bg-dots-lighter {
+        background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E");
+    }
 }
 
-.header h4 {
-  color: rgb(123, 94, 227);
-  font-weight: 700;
-  font-size: 2.4rem;
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-}
-.app-main {
-  width: 90%;
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 20px;
-  text-align: center;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-  border-radius: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-}
-
-.input-box {
+.bg-img{
+  background-image: url(../images/background.jpeg);
+  position: fixed;
+  left: 0;
   width: 100%;
-  background: rgb(199, 255, 253);
-  color: rgb(123, 94, 227);
-  font-weight: 500;
-  font-size: 1.7rem;
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  outline: none;
-  border: none;
+  height: 590px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(5px);
+  z-index: -1;
 }
 
-.btn {
-  background-image: url('images/btn.jpeg');
+div.outer-bg{
+  border-radius: 15px;
+}
+
+.outer-bg{
+  background-image: url(../images/background.jpeg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 590px; 
+  width: 100%;
+}
+
+.centered-box {
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 400px;
+  width: 250px;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 20px; 
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(75, 31, 31, 0.4);
+}
+
+.inner-bg{
+  text-align: center;
+}
+
+.logo{
+  width: 200px;
+}
+
+.content{
+  text-align: center;
+  height: 50px;
+  color: rgb(123, 94, 227);
+  text-shadow: 0 0 10px rgb(255, 255, 255), 0 0 20px #ffffff, 0 0 30px #ffffff;
+}
+
+.btn{
+  background-image: url(../images/_berenice_.gif);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   width: 120px;
   padding: 10px;
-  margin-top: 20px;
+  margin: 50px;
+  margin-bottom: 30px;
   border: 0;
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
@@ -179,48 +157,12 @@ body {
   cursor: pointer;
 }
 
-.weather-body {
-  color: #fff;
-  padding: 20px;
-  line-height: 2rem;
-  border-radius: 10px;
-  margin-top: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 20px rgba(75, 31, 31, 0.4);
-}
-.location-deatils {
-  font-weight: bold;
-}
-.weather-status {
-  padding: 20px;
-}
-.temp {
-  font-size: 5rem;
-  font-weight: 700;
-  text-shadow: 2px 4px rgba(0, 0, 0, 0.1);
-}
-.weather {
-  font-size: 2rem;
-  margin-top: 20px;
-}
-.min-max {
-  font-size: 1.2rem;
-  font-weight: 400;
-  margin-top: 15px;
+.para{
+  font-size: 15px;
+  color: rgb(255, 255, 255);
+  margin: 0;
+  text-shadow: 0 0 10px rgb(0, 0, 0), 0 0 20px #000000, 0 0 30px #000000;
 }
 
-.basic {
-  font-size: 1rem;
-  margin-top: 20px;
-}
 
-@media screen and (max-width: 800px) {
-  .app-main {
-    width: 95%;
-    padding: 10px;
-  }
-  body {
-    min-height: 94vh;
-  }
-}
 </style>

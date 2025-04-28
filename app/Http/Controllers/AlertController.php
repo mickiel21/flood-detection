@@ -8,9 +8,15 @@ use Inertia\Inertia;
 use App\Models\Sensor;
 class AlertController extends Controller
 {
-/**
-     * Display a listing of the resource.
-     */
+    public function __construct(){
+        $this->middleware('permission:alert list|alert create|alert edit|alert delete', ['only' => ['index','show']]);
+
+         $this->middleware('permission:alert create', ['only' => ['create','store']]);
+
+         $this->middleware('permission:alert edit', ['only' => ['edit','update']]);
+
+         $this->middleware('permission:alert delete', ['only' => ['destroy']]);
+    }
     public function index(Request $request)
     {
         $alert = Alert::with('sensor')

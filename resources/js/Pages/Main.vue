@@ -1,5 +1,7 @@
 <template>
-    
+    <div>
+      
+    </div>
     <div class="app-main" id="parent">
         <div class="header">
             <h4>Get Weather</h4>

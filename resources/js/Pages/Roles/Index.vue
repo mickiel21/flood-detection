@@ -31,8 +31,7 @@ const deleteTrade = (id) => {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"><a
                     :href="route('roles.index')">Roles</a>
-                <PrimaryLink :href="route('roles.index', { filter: 'only' })" class="max-w-xl ml-2">View Trashed
-                </PrimaryLink>
+                
                 <PrimaryLink :href="route('roles.create')" class="max-w-xl ml-2">Add Role</PrimaryLink>
             </h2>
         </template>

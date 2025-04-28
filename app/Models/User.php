@@ -44,4 +44,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['filter'] ?? null, function ($query, $filter) {
+            if ($filter === 'only') {
+                $query->onlyTrashed();
+            }
+        });
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        // Format the date using Carbon or any other date formatting method
+        return \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 }

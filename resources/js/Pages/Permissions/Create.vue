@@ -14,15 +14,15 @@ const form = useForm({
 });
 const statusOptions = ['active', 'inactive']; // Severity dropdown options
 const submit = () => {
-    form.post(route("sensors.store"));
+    form.post(route("permissions.store"));
 };
 </script>
 <template>
-    <Head title="Create Blog" />
+    <Head title="Create Permission" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Blog</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Permission</h2>
         </template>
 
         <div class="py-12">

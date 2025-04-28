@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use App\Models\CustomRole as Role;
+use App\Models\CustomPermission as Permission;
 
 class RoleController extends Controller
 {
@@ -21,6 +22,8 @@ class RoleController extends Controller
             ->paginate(5)
             ->withQueryString();
       
+        
+
         return Inertia::render('Roles/Index', [
             'roles' => $roles,
             'filters' => $request->all('filter'),
@@ -33,8 +36,11 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $permissions = Permission::all();
         return Inertia::render(
-            'Roles/Create'
+            'Roles/Create',[
+                'permissions' => $permissions,
+            ]
         );
     }
 
@@ -43,16 +49,17 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validated = $request->validate([
+            'name' => 'required|string|unique:roles,name',
+            'permissions' => 'array',
         ]);
+  
+        $role = Role::create(['name' => $validated['name']]);
+        $role->syncPermissions($validated['permissions']); // Attach selected permissions
 
-        Role::create([
-            'name' => $request->name,
-        ]);
-
-        return redirect()->route('roles.index')->with('message', 'Role Created Successfully');
+        return redirect()->route('roles.index')->with('message', 'Role created successfully.');
     }
+
 
     /**
      * Display the specified resource.

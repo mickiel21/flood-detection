@@ -31,8 +31,6 @@ const deleteTrade = (id) => {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"><a
                     :href="route('alerts.index')">Alerts</a>
-                <PrimaryLink :href="route('alerts.index', { filter: 'only' })" class="max-w-xl ml-2">View Trashed
-                </PrimaryLink>
                 <PrimaryLink :href="route('alerts.create')" class="max-w-xl ml-2">Add Alerts</PrimaryLink>
             </h2>
         </template>
@@ -88,7 +86,7 @@ const deleteTrade = (id) => {
                         </td>
                         
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <PrimaryLink v-if="entry.deleted_at == null" :href="route('alerts.edit', { 'id': entry.id })"
+                            <PrimaryLink v-if="entry.deleted_at == null && $page.props.user.permissions.includes('edit alerts') " :href="route('alerts.edit', { 'id': entry.id })"
                                 class="max-w-xl ml-2">EDIT
                             </PrimaryLink>
                             <DangerButton class="ml-3" @click="deleteTrade(entry.id)" v-if="entry.deleted_at == null">

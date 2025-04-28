@@ -47,7 +47,7 @@ class PermissionController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
-
+       
         Permission::create([
             'name' => $request->name,
         ]);
