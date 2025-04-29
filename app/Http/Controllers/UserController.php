@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\CustomRole as Role;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 class UserController extends Controller
@@ -75,12 +75,12 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $blog)
+    public function show(User $user)
     {
         return Inertia::render(
             'Users/View',
             [
-                'blog' => $blog
+                'user' => $user
             ]
         );
     }
@@ -93,7 +93,9 @@ class UserController extends Controller
         return Inertia::render(
             'Users/Edit',
             [
-                'user' => $user
+                'user' => $user,
+               'permissions' => auth()->user()->getAllPermissions()->pluck('name'),
+
             ]
         );
     }
@@ -101,27 +103,27 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $blog)
+    public function update(Request $request, User $user)
     {
         $request->validate([
             'heading' => 'required|string|max:255',
-            'slug' => 'required||unique:blogs,slug,'.$blog->id.',id|string|max:255'
+            'slug' => 'required||unique:users,slug,'.$user->id.',id|string|max:255'
         ]);
-        $blog->update([
+        $user->update([
             'heading' => $request->heading,
             'slug' => Str::slug($request->slug),
             'description' => $request->description
         ]);
 
-        return redirect()->route('blogs.index')->with('message', 'User Post Updated Successfully');
+        return redirect()->route('users.index')->with('message', 'User Post Updated Successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $blog)
+    public function destroy(User $user)
     {
-        $blog->delete();
-        return redirect()->route('blogs.index')->with('message', 'User Post Deleted Successfully');
+        $user->delete();
+        return redirect()->route('users.index')->with('message', 'User Post Deleted Successfully');
     }
 }

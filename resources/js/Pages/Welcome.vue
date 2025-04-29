@@ -58,7 +58,7 @@ defineProps({
                     </div>
 
                     <div class="content">
-                    <h2>Weather<br>Forecasts</h2>
+                    <h2>Flood Detection<br>Forecasts</h2>
                     </div>
 
                     <Link :href="route('main')">

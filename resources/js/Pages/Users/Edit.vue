@@ -8,31 +8,24 @@ import { Link, useForm, usePage } from '@inertiajs/vue3';
 import NewDropdown from '@/Components/NewDropdown.vue';
 
 const props = defineProps({
-    sensor : Object
+    user : Object
 });
 
 const form = useForm({
-    id: props.sensor.id, // Sensor ID
-    name: props.sensor.name, // Sensor name
-    type: props.sensor.type, // Sensor type
-    location: props.sensor.location, // Sensor location
-    status: props.sensor.status, // Sensor status (e.g., active/inactive)
-    min_value: props.sensor.min_value, // Minimum sensor value
-    max_value: props.sensor.max_value, // Maximum sensor value
-    installation_date: props.sensor.installation_date, // Installation date
+    id: props.user.id, // User ID
+    name: props.user.name, // User name
 });
 
-const statusOptions = ['active', 'inactive']; // Severity dropdown options
 const submit = () => {
-     form.put(route("sensors.update", props.sensor.id));
+     form.put(route("users.update", props.user.id));
 };
 </script>
 <template>
-    <Head title="Edit Sensor" />
+    <Head title="Edit User" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Sensor</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit User</h2>
         </template>
 
         <div class="py-12">
@@ -51,81 +44,9 @@ const submit = () => {
                                 autofocus
                             />
 
-                            <InputError class="mt-2" :message="form.errors.heading" />
+                            <InputError class="mt-2" :message="form.errors.name" />
                         </div>
 
-                        <div>
-                            <InputLabel for="type" value="Type" />
-
-                            <TextInput
-                                id="type"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.type"
-                                required
-                            />
-
-                            <InputError class="mt-2" :message="form.errors.type" />
-                        </div>
-
-                        <div>
-                            <InputLabel for="location" value="Location" />
-
-                            <TextInput
-                                id="location"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.location"
-                                required
-                            />
-
-                            <InputError class="mt-2" :message="form.errors.location" />
-                        </div>
-                        <div>
-                            <InputLabel for="status" value="Status" />
-                            <NewDropdown id="severity" class="mt-1 block w-full" v-model="form.status" :options="statusOptions" required />
-
-                            <InputError class="mt-2" :message="form.errors.status" />
-                        </div>
-                        <div>
-                            <InputLabel for="min_value" value="Min Value" />
-
-                            <TextInput
-                                id="min_value"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.min_value"
-                                required
-                            />
-
-                            <InputError class="mt-2" :message="form.errors.min_value" />
-                        </div>
-                        <div>
-                            <InputLabel for="max_value" value="Max Value" />
-
-                            <TextInput
-                                id="max_value"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.max_value"
-                                required
-                            />
-
-                            <InputError class="mt-2" :message="form.errors.max_value" />
-                        </div>
-                        <div>
-                            <InputLabel for="installation_date" value="Installation Date" />
-
-                            <TextInput
-                                id="installation_date"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.installation_date"
-                                required
-                            />
-
-                            <InputError class="mt-2" :message="form.errors.installation_date" />
-                        </div>
 
                         <div class="flex items-center gap-4">
                             <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
