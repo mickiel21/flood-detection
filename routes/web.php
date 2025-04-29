@@ -40,7 +40,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
-    Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class)->except(['edit', 'update']);    ;
     Route::resource('sensors', SensorController::class);
     Route::resource('alerts', AlertController::class);
     Route::resource('permissions', PermissionController::class);

@@ -6,14 +6,18 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import NewDropdown from '@/Components/NewDropdown.vue';
+import CustomCheckbox from '@/Components/CustomCheckbox.vue';
 
 const props = defineProps({
-    role : Object
+    role : Object,
+    permissions: Array,
+    role_permissions: Array,
 });
 
 const form = useForm({
     id: props.role.id, // Role ID
     name: props.role.name, // Role name
+    permissions: props.role_permissions,
 });
 
 const submit = () => {
@@ -47,6 +51,21 @@ const submit = () => {
                             <InputError class="mt-2" :message="form.errors.name" />
                         </div>
 
+                        <div>
+                            <InputLabel for="permissions" value="Permissions" />
+                            <div class="mt-2 space-y-2">
+                             
+                               <div :class="permissions.length > 5 ? 'grid grid-cols-2 gap-4' : 'space-y-2'">
+                                    <div v-for="permission in permissions" :key="permission.id">
+                                        <CustomCheckbox :value="permission.name" :checked="form.permissions" @update:checked="form.permissions = $event" />
+                                        <label class="ml-2">{{ permission.name }}</label>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <InputError class="mt-2" :message="form.errors.permissions" />
+                        </div>
 
                         <div class="flex items-center gap-4">
                             <PrimaryButton :disabled="form.processing">Save</PrimaryButton>

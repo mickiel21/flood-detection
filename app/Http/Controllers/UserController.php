@@ -85,20 +85,24 @@ class UserController extends Controller
         );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        return Inertia::render(
-            'Users/Edit',
-            [
-                'user' => $user,
-               'permissions' => auth()->user()->getAllPermissions()->pluck('name'),
-
-            ]
-        );
-    }
+    // /**
+    //  * Show the form for editing the specified resource.
+    //  */
+    // public function edit(User $user)
+    // {
+    //     return Inertia::render(
+    //         'Users/Edit',
+    //         [
+    //             'user' => [
+    //                 'id' => $user->id,
+    //                 'name' => $user->name,
+    //                 'roles' => $user->roles->pluck('name'), // Extract only role names
+    //                 'permissions' => $user->getAllPermissions()->pluck('name'), // Extract only permission names
+    //             ],
+    //         ]
+    //     );
+    
+    // }
 
     /**
      * Update the specified resource in storage.

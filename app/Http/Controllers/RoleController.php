@@ -86,10 +86,13 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        $permissions = Permission::all();
         return Inertia::render(
             'Roles/Edit',
             [
-                'role' => $role
+                'role' => $role,
+                'permissions' => $permissions,
+                'role_permissions' => $role->permissions->pluck('name'),
             ]
         );
     }
@@ -101,11 +104,14 @@ class RoleController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'permissions' => 'array',
         ]);
 
         $role->update([
             'name' => $request->name,
         ]);
+
+        $role->syncPermissions($request->permissions);
 
         return redirect()->route('roles.index')->with('message', 'Role Updated Successfully');
     }
