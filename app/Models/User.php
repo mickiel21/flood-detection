@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone'
     ];
 
     /**
@@ -59,4 +60,10 @@ class User extends Authenticatable
         // Format the date using Carbon or any other date formatting method
         return \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+
+    public function routeNotificationForVonage()
+    {
+        return $this->phone;
+    }
+
 }

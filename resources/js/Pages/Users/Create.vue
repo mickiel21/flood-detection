@@ -13,6 +13,7 @@ const props = defineProps({
 const form = useForm({
     name: '',
     email: '',
+    phone: '',
     role: '',
     password: '',
     password_confirmation: '',
@@ -61,6 +62,21 @@ const submit = () => {
                             />
 
                             <InputError class="mt-2" :message="form.errors.email" />
+                        </div>
+
+                        <div>
+                            <InputLabel for="type" value="Phone" />
+
+                            <TextInput
+                                id="type"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.phone"
+                                required 
+                                autofocus
+                            />
+
+                            <InputError class="mt-2" :message="form.errors.phone" />
                         </div>
                         <div class="mt-3">
                             <InputLabel for="password" value="Password" />

@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use App\Notifications\FloodAlertNotification;
+
 class UserController extends Controller
 {
 
@@ -60,12 +62,14 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone' => 'required|string|max:255',
             'role' => 'required',
         ]);
 
        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
         $user->assignRole($request->input('role'));
@@ -107,20 +111,20 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'heading' => 'required|string|max:255',
-            'slug' => 'required||unique:users,slug,'.$user->id.',id|string|max:255'
-        ]);
-        $user->update([
-            'heading' => $request->heading,
-            'slug' => Str::slug($request->slug),
-            'description' => $request->description
-        ]);
+    // public function update(Request $request, User $user)
+    // {
+    //     $request->validate([
+    //         'heading' => 'required|string|max:255',
+    //         'slug' => 'required||unique:users,slug,'.$user->id.',id|string|max:255'
+    //     ]);
+    //     $user->update([
+    //         'heading' => $request->heading,
+    //         'slug' => Str::slug($request->slug),
+    //         'description' => $request->description,
+    //     ]);
 
-        return redirect()->route('users.index')->with('message', 'User Post Updated Successfully');
-    }
+    //     return redirect()->route('users.index')->with('message', 'User Post Updated Successfully');
+    // }
 
     /**
      * Remove the specified resource from storage.
