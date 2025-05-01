@@ -66,11 +66,11 @@ const form = useForm({
             </div>
 
             <div>
-                <InputLabel for="phone" value="Email" />
+                <InputLabel for="phone" value="Phone" />
 
                 <TextInput
-                    id="email"
-                    type="text"
+                    id="phone"
+                    type="tel"
                     class="mt-1 block w-full"
                     v-model="form.phone"
                     required

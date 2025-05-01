@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Notifications\FloodAlertNotification;
+use App\Notifications\SMSNotification;
 
 class UserController extends Controller
 {

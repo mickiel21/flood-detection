@@ -66,18 +66,18 @@ const submit = () => {
 
                         <div>
                             <InputLabel for="type" value="Phone" />
-
-                            <TextInput
-                                id="type"
-                                type="text"
-                                class="mt-1 block w-full"
-                                v-model="form.phone"
+                            <TextInput 
+                                id="phone" 
+                                type="tel" 
+                                class="mt-1 block w-full"   
+                                v-model="form.phone" 
                                 required 
-                                autofocus
+                                autofocus autocomplete="phone"  
+                                placeholder="+639123456789" 
                             />
-
                             <InputError class="mt-2" :message="form.errors.phone" />
                         </div>
+                        
                         <div class="mt-3">
                             <InputLabel for="password" value="Password" />
                             <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="new-password" />
