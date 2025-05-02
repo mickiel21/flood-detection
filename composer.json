@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "laravel/vonage-notification-channel": "^3.3",
+        "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-permission": "^6.16",
         "tightenco/ziggy": "^2.0",
         "vonage/client": "^4.1"

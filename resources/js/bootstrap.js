@@ -6,6 +6,20 @@
 
 import axios from 'axios';
 window.axios = axios;
+// resources/assets/js/bootstrap.js
+import Echo from "laravel-echo";
+
+import Pusher from "pusher-js";
+Pusher.logToConsole = true;
+
+window.Pusher = Pusher;
+window.Echo = new Echo({
+    broadcaster: "pusher",
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? "ap1",
+    forceTLS: true, // Defaults to HTTPS
+    enabledTransports: ["ws", "wss"], // Allows secu
+});
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
