@@ -9,6 +9,10 @@ export default defineConfig({
         cors: true, // Enable CORS
       
     },
+    build: {
+        assetsDir: '',  // Prevents `build/` prefix
+      },
+    
     plugins: [
         laravel({
             input: 'resources/js/app.js',
