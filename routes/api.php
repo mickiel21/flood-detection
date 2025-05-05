@@ -19,7 +19,12 @@ use App\Http\Controllers\FloodDetectionController;
 //     return $request->user();
 // });
 
-Route::post('/water-level', [FloodDetectionController::class, 'store']);
+
 
 Route::post('/email-notification', [FloodDetectionController::class, 'testEmailNotification']);
 Route::post('/sms-notification', [FloodDetectionController::class, 'testSmsNotification']);
+
+
+Route::middleware(['cors'])->group(function () {
+    Route::post('/water-level', [FloodDetectionController::class, 'store']);
+});

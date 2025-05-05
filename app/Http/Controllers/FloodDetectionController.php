@@ -12,9 +12,13 @@ use Illuminate\Support\Facades\Log;
 class FloodDetectionController extends Controller
 {
    public function store(Request $request){
-      event(new WaterLevel($request->water_level));
-      return response()->json(['status' => 'Message broadcasted']);
+      Log::info("Water Level Value: " . $request->water_level);
 
+      event(new WaterLevel($request->water_level));
+      return response()->json([
+         'message' => 'Sensor value received successfully!',
+         'data' => $request->all()
+      ], 200);
    }
 
    public function testEmailNotification(Request $request){

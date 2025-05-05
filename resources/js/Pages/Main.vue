@@ -1,188 +1,170 @@
 <template>
-    <div>
-      
+  <Head title="Main" />
+  <div v-if="canLogin" class="sm:fixed sm:top-0 sm:right-0 p-6 text-end">
+            <Link
+                v-if="$page.props.auth.user"
+                :href="route('dashboard')"
+                class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                >Dashboard</Link
+            >
+
+            <template v-else>
+                <Link
+                    :href="route('login')"
+                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    >Log in</Link
+                >
+
+                <Link
+                    v-if="canRegister"
+                    :href="route('register')"
+                    class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    >Register</Link
+                >
+            </template>
+        </div>
+  <div class="app-main" id="parent">
+    <h2 class="text-2xl font-bold text-blue-600">Weather App</h2>
+
+    <!-- Weather Data -->
+    <div v-if="weather" class="weather-body" id="weather-body">
+      <div class="location-deatils">
+        <div class="city" id="city">{{ weather.name }}, {{ weather.sys.country }}</div>
+        <div class="date" id="date"> {{ formattedDate }}</div>
+      </div>
+      <div class="weather-status">
+        <div class="temp" id="temp">{{ Math.round(weather.main.temp) }}&deg;C </div>
+        <div class="weather" id="weather"> {{ weather.weather[0].main }} <i
+            :class="getIconClass(weather.weather[0].main)"></i> </div>
+        <div class="min-max" id="min-max">{{ Math.floor(weather.main.temp_min) }}&deg;C (min) /
+          {{ Math.ceil(weather.main.temp_max) }}&deg;C (max) </div>
+        <div id="updated_on">Updated as of {{ formattedDate }}</div>
+      </div>
+      <hr>
+      <div class="day-details">
+        <div class="basic">Feels like {{ weather.main.feels_like }}&deg;C | Humidity {{ weather.main.humidity }}% <br>
+          Pressure {{ weather.main.pressure }} mb | Wind {{ weather.wind.speed }} KMPH</div>
+      </div>
     </div>
-    <div class="app-main" id="parent">
-        <div class="header">
-            <h4>Get Weather</h4>
-        </div>
-        <div class="searchInputBox">
-            <input type="text" v-model="city" class="input-box" placeholder="Enter city name" @keyup.enter="getWeatherReport" />
-            <button class="btn" @click="getWeatherReport">Search</button>
-        </div>
-        <div class="weather-body" id="weather-body">
-        </div>
-            
+
+    <div v-if="weather" class="weather-body mt-3" id="weather-body">
+        <WaterLevelCard :initialWaterLevel="waterLevel" />
     </div>
-    
+  </div>
 </template>
 
-<script>
-
+<script setup>
+import { Head, Link } from '@inertiajs/vue3';
+import { shallowRef, computed, onMounted } from "vue";
+import Swal from "sweetalert2";
+import WaterLevelCard from '@/Components/WaterLevelCard.vue';
 const weatherApi = {
-    key: '5174a4c980abc22f0dc589db984742cf',
-    baseUrl: 'https://api.openweathermap.org/data/2.5/weather'
-}
+  key: import.meta.env.VITE_WEATHER_API_KEY,
+  baseUrl: import.meta.env.VITE_WEATHER_API_BASE_URL,
+};
 
-
-export default {
-    name: 'Dashboard',
-    components: {
-        
+defineProps({
+    canLogin: {
+        type: Boolean,
     },
-    data() {
-        return {
-            city: '',
-        }
+    canRegister: {
+        type: Boolean,
     },
-methods:{
+});
+// Reactive variables
+const city = shallowRef("Angono");
+const weather = shallowRef(null);
+const weatherStatus = shallowRef(null);
+const waterLevel = shallowRef(0);
 
-    getWeatherReport(city) {
-    fetch(`${weatherApi.baseUrl}?q=${city}&appid=${weatherApi.key}&units=metric`)  
-        .then(weather => {   
-            return weather.json(); 
-        }).then(showWeaterReport);  
+// Fetch weather data
+const getWeatherReport = async () => {
+  if (!city.value) {
+    Swal.fire("Empty Input", "Please enter a city name", "error");
+    return;
+  }
 
-},
+  try {
+    const response = await fetch(`${weatherApi.baseUrl}?q=${city.value}&appid=${weatherApi.key}&units=metric`);
+    const data = await response.json();
 
- showWeaterReport(weather) {
-    let city_code=weather.cod;
-    if(city_code==='400'){ 
-        swal("Empty Input", "Please enter any city", "error");
-        reset();
-    }else if(city_code==='404'){
-        swal("Bad Input", "entered city didn't matched", "warning");
-        reset();
+    if (data.cod === "404") {
+      Swal.fire("City Not Found", "Entered city didn't match", "warning");
+      return;
     }
-    else{
 
-    let op = document.getElementById('weather-body');
-    op.style.display = 'block';
-    let todayDate = new Date();
-    let parent=document.getElementById('parent');
-    let weather_body = document.getElementById('weather-body');
-    weather_body.innerHTML =
-        `
-    <div class="location-deatils">
-        <div class="city" id="city">${weather.name}, ${weather.sys.country}</div>
-        <div class="date" id="date"> ${dateManage(todayDate)}</div>
-    </div>
-    <div class="weather-status">
-        <div class="temp" id="temp">${Math.round(weather.main.temp)}&deg;C </div>
-        <div class="weather" id="weather"> ${weather.weather[0].main} <i class="${getIconClass(weather.weather[0].main)}"></i>  </div>
-        <div class="min-max" id="min-max">${Math.floor(weather.main.temp_min)}&deg;C (min) / ${Math.ceil(weather.main.temp_max)}&deg;C (max) </div>
-        <div id="updated_on">Updated as of ${getTime(todayDate)}</div>
-    </div>
-    <hr>
-    <div class="day-details">
-        <div class="basic">Feels like ${weather.main.feels_like}&deg;C | Humidity ${weather.main.humidity}%  <br> Pressure ${weather.main.pressure} mb | Wind ${weather.wind.speed} KMPH</div>
-    </div>
-    `;
-    parent.append(weather_body);
-    changeBg(weather.weather[0].main);
-    reset();
-    }
-},
+    weather.value = data;
+    weatherStatus.value = data.weather[0].main;
+    changeBg(weatherStatus.value);
+  } catch (error) {
+    console.error("Error fetching weather data:", error);
+    Swal.fire("Error", "Failed to retrieve weather data", "error");
+  }
+};
+
+const changeBg = (status) => {
+  const bgImages = {
+    Clouds: "../images/clouds.jpeg",
+    Rain: "../images/rain.jpeg",
+    Clear: "../images/clear.jpeg",
+    Snow: "../images/snow.jpeg",
+    Sunny: "../images/sunny.jpeg",
+    Thunderstorm: "../images/thunder.jpeg",
+    Drizzle: "../images/drizzle.jpeg",
+    Mist: "../images/mist.jpeg",
+    Haze: "../images/mist.jpeg",
+    Fog: "../images/mist.jpeg",
+    Default: "../images/bg1.jpeg",
+  };
+
+  document.body.style.backgroundImage = `url(${bgImages[status] || bgImages.Default})`;
+};
 
 
 
+const getIconClass = computed(() => (weatherType) => {
+  const icons = {
+    Rain: "fas fa-cloud-showers-heavy",
+    Clouds: "fas fa-cloud",
+    Clear: "fas fa-cloud-sun",
+    Snow: "fas fa-snowman",
+    Sunny: "fas fa-sun",
+    Mist: "fas fa-smog",
+    Thunderstorm: "fas fa-thunderstorm",
+    Drizzle: "fas fa-thunderstorm"
+  };
 
- getTime(todayDate) {
-    let hour =addZero(todayDate.getHours());
-    let minute =addZero(todayDate.getMinutes());
-    return `${hour}:${minute}`;
-},
+  return icons[weatherType] || "fas fa-cloud-sun";
+});
 
- dateManage(dateArg) {
-    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-    let year = dateArg.getFullYear();
-    let month = months[dateArg.getMonth()];
-    let date = dateArg.getDate();
-    let day = days[dateArg.getDay()];
-    return `${date} ${month} (${day}) , ${year}`
-},
-
- changeBg(status) {
-    if (status === 'Clouds') {
-        document.body.style.backgroundImage = 'url("images/clouds.jpeg")';
-    } else if (status === 'Rain') {
-        document.body.style.backgroundImage = 'url("images/rain.jpeg")';
-    } else if (status === 'Clear') {
-        document.body.style.backgroundImage = 'url("images/clear.jpeg")';
-    }
-    else if (status === 'Snow') {
-        document.body.style.backgroundImage = 'url("images/snow.jpeg")';
-    }
-    else if (status === 'Sunny') {
-        document.body.style.backgroundImage = 'url("images/sunny.jpeg")';
-    } 
-    else if (status === 'Thunderstorm') {
-        document.body.style.backgroundImage = 'url("images/thunder.jpeg")';
-    } 
-    else if (status === 'Drizzle') {
-        document.body.style.backgroundImage = 'url("images/drizzle.jpeg")';
-    } 
-    else if (status === 'Mist' || status === 'Haze' || status === 'Fog') {
-        document.body.style.backgroundImage = 'url("images/mist.jpeg")';
-    }
-    else {
-        document.body.style.backgroundImage = 'url("images/bg1.jpeg")';
-    }
-},
-
- getIconClass(classarg) {
-    if (classarg === 'Rain') {
-        return 'fas fa-cloud-showers-heavy';
-    } else if (classarg === 'Clouds') {
-        return 'fas fa-cloud';
-    } else if (classarg === 'Clear') {
-        return 'fas fa-cloud-sun';
-    } else if (classarg === 'Snow') {
-        return 'fas fa-snowman';
-    } else if (classarg === 'Sunny') {
-        return 'fas fa-sun';
-    } else if (classarg === 'Mist') {
-        return 'fas fa-smog';
-    } else if (classarg === 'Thunderstorm' || classarg === 'Drizzle') {
-        return 'fas fa-thunderstorm';
-    } else {
-        return 'fas fa-cloud-sun';
-    }
-},
-
- reset() {
-    let input = document.getElementById('input-box');
-    input.value = "";
-},
-
- addZero(i) {
-    if (i < 10) {
-        i = "0" + i;
-    }
-    return i;
-}
-
-}
-
-}
+onMounted(() => {
+  getWeatherReport()
+  Echo.channel('water-level')
+    .listen('.WaterLevel', (event) => {
+      console.log('Event Received:', event);
+      waterLevel.value = event.message;
+    });
+});
 
 
+const formattedDate = computed(() => {
+  return new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+});
 </script>
 
 
-<style scoped>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto&family=Ubuntu:wght@300&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: 'Roboto', sans-serif;
-  background-image: url("'images/bg.jpg");
+  background-image: url("../images/bg.jpg");
   min-height: 92vh;
   overflow: auto;
   background-repeat: no-repeat;
@@ -196,6 +178,7 @@ body {
   font-size: 2.4rem;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
 }
+
 .app-main {
   min-height: 10vh;
   width: 30vw;
@@ -204,14 +187,16 @@ body {
   text-align: center;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   border-radius: 15px;
-  background-image: url('images/bg.jpg'); 
+  background-image: url(../images/bg.jpg);
 }
-.app-main > * {
+
+.app-main>* {
   margin-bottom: 20px;
 }
+
 .input-box {
   width: 100%;
-  background:  rgb(199, 255, 253);
+  background: rgb(199, 255, 253);
   color: rgb(123, 94, 227);
   font-weight: 500;
   border: none;
@@ -223,8 +208,8 @@ body {
   border: none;
 }
 
-.btn{
-  background-image: url('images/btn.jpeg');
+.btn {
+  background-image: url(../images/btn.jpeg);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -240,31 +225,35 @@ body {
 }
 
 .weather-body {
-  color: #fff;
+  color: #fff !important;
   padding: 20px;
   line-height: 2rem;
   border-radius: 10px;
-  display: none;
   backdrop-filter: blur(10px);
   box-shadow: 0 0 20px rgba(75, 31, 31, 0.4);
 }
+
 .location-deatils {
   font-weight: bold;
 }
+
 .weather-status {
   padding: 20px;
 }
+
 .temp {
   font-size: 5rem;
   font-weight: 700;
   margin-bottom: 20px 0px;
   text-shadow: 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .weather {
   margin-top: 25px;
   font-size: 2rem;
   margin-bottom: 10px;
 }
+
 .min-max {
   font-size: 1.2rem;
   font-weight: 400;
@@ -274,10 +263,12 @@ body {
 .day_details {
   padding: 20px;
 }
+
 .sun-detail,
 .basic {
   font-size: 1rem;
 }
+
 #weather-icon {
   color: black;
 }
@@ -288,9 +279,9 @@ body {
     width: 95%;
     padding: 10px;
   }
+
   body {
     min-height: 94vh;
   }
 }
-
 </style>
