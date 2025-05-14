@@ -8,6 +8,7 @@ use Database\Seeders\UserSeeder;
 use Database\Seeders\RolesSeeder;
 use Database\Seeders\AlertSeeder;
 use Database\Seeders\SensorSeeder;
+use Database\Seeders\WaterLevelSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SensorSeeder::class,
             AlertSeeder::class,
+            WaterLevelSeeder::class,
         ]);
     }
 }
