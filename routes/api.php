@@ -23,6 +23,7 @@ use App\Http\Controllers\FloodDetectionController;
 
 Route::post('/email-notification', [FloodDetectionController::class, 'testEmailNotification']);
 Route::post('/sms-notification', [FloodDetectionController::class, 'testSmsNotification']);
+Route::post('/semaphore-notification', [FloodDetectionController::class, 'testSemaphore']);
 
 
 Route::middleware(['cors'])->group(function () {

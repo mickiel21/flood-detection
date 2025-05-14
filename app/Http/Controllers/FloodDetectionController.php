@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Notifications\FloodAlertNotification;
 use App\Notifications\SMSNotification;
+use App\Notifications\SemaphoreSMSNotification;
 use App\Models\User;
 use App\Events\WaterLevel;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +15,7 @@ class FloodDetectionController extends Controller
    public function store(Request $request){
       Log::info("Water Level Value: " . $request->water_level);
 
-      event(new WaterLevel($request->water_level));
+     event(new WaterLevel($request->water_level));
       return response()->json([
          'message' => 'Sensor value received successfully!',
          'data' => $request->all()
@@ -33,5 +34,14 @@ class FloodDetectionController extends Controller
     $user->notify(new SMSNotification($request->severity));
     echo 'sms working';
    }
+
+   public function testSemaphore(Request $request){
+    $user = User::find(1);
+    $user->notify(new SemaphoreSMSNotification( 'Flood Alert: Heavy rains detected!'));
+    echo 'semaphore working';
+   }
+
+
+
 
 }

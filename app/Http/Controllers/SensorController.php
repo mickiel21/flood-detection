@@ -113,7 +113,7 @@ class SensorController extends Controller
             'description' => $request->description
         ]);
 
-        return redirect()->route('blogs.index')->with('message', 'Sensor Post Updated Successfully');
+        return redirect()->route('sensors.index')->with('message', 'Sensor Post Updated Successfully');
     }
 
     /**
@@ -122,6 +122,6 @@ class SensorController extends Controller
     public function destroy(Sensor $blog)
     {
         $blog->delete();
-        return redirect()->route('blogs.index')->with('message', 'Sensor Post Deleted Successfully');
+        return redirect()->route('sensors.index')->with('message', 'Sensor Post Deleted Successfully');
     }
 }
