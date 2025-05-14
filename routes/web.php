@@ -9,6 +9,7 @@ use App\Http\Controllers\SensorController;
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,11 +37,9 @@ Route::get('/main', function () {
 })->name('main');
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified','permission:read dashboard'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
     Route::resource('users', UserController::class)->except(['edit', 'update']);    ;
