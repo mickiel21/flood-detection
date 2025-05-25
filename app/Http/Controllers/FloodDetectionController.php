@@ -32,7 +32,7 @@ class FloodDetectionController extends Controller
    }
 
    public function testEmailNotification(Request $request){
-    $user = User::find(2);
+    $user = User::find(3);
   
     $user->notify(new FloodAlertNotification($request->severity));
     echo 'email working';

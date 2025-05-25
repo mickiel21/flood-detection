@@ -38,19 +38,26 @@ class FloodAlertNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $message = new MailMessage();
-        $message->subject("Flood Alert: {$this->severity} Warning")
+        $message->subject("🚨 Flood Alert: {$this->severity} Warning")
                 ->greeting("Attention!");
 
-
-        if ($this->severity === 'Medium') {
-            $message->line("Moderate flooding detected. Please stay alert and follow safety measures.")
-                    ->action('Check Updates', url('/'));
-        } elseif ($this->severity === 'Critical') {
-            $message->line("Severe flooding detected! Evacuate immediately and seek higher ground.")
-                    ->action('Emergency Info', url('/evacuation-plan'));
+        switch ($this->severity) {
+            case 'Low':
+                $message->line("Water level is stable. No immediate action needed. Stay informed.")
+                        ->action('View Status', url('/'));
+                break;
+            case 'Medium':
+                $message->line("Moderate flooding detected. Please stay alert and follow safety measures.")
+                        ->action('Check Updates', url('/main'));
+                break;
+            case 'High':
+                $message->line("High water level detected! Prepare for possible flooding.")
+                        ->action('Safety Tips', url('/main'));
+                break;
         }
 
-            return $message;
+        return $message;
+
         
 
     }

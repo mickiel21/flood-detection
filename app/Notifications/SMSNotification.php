@@ -7,8 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\VonageMessage;
+use App\Models\Message;
 
-class SMSNotification extends Notification
+class SMSNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -31,15 +32,21 @@ class SMSNotification extends Notification
      */
     public function toVonage($notifiable)
     {
+        $messageData = Message::where('sensor_id', 1) // Use dynamic sensor_id
+                      ->where('severity', $this->severity)
+                      ->first();
+
         $message = "Flood Alert: {$this->severity} Warning\n";
-    
-        if ($this->severity === 'Medium') {
-            $message .= "Moderate flooding detected. Stay alert and follow safety measures.";
-        } elseif ($this->severity === 'Critical') {
-            $message .= "Severe flooding detected! Evacuate immediately and seek higher ground.";
+
+        // Ensure $messageData is not null before accessing properties
+        if ($messageData) {
+            $message .= $messageData->message;
+        } else {
+            $message .= "No predefined alert message found for this severity level.";
         }
-    
+
         return (new VonageMessage)->content($message);
+
     }
     
 
