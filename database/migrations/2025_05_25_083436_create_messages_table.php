@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('alerts', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sensor_id'); // Link to sensor
-            $table->string('type'); // Alert type (e.g., flood warning)
+            $table->foreignId('sensor_id')->constrained('sensors')->onDelete('cascade');
+            $table->text('message'); // Stores sensor-related message
+            $table->text('severity'); // Categorization of message
             $table->timestamps();
-            $table->softDeletes();
-            // Foreign key constraint
-            $table->foreign('sensor_id')->references('id')->on('sensors')->onDelete('cascade');
         });
+
     }
 
     /**
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('alerts');
+        Schema::dropIfExists('messages');
     }
 };

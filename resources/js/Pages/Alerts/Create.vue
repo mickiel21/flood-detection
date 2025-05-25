@@ -9,22 +9,29 @@ import { Link, useForm, usePage } from '@inertiajs/vue3';
 
 const page = usePage();
 const sensors = page.props.sensors; // Fetch sensors from the backend
-const severityOptions = ['Low', 'Medium', 'High', 'Critical'];
+const severityOptions = ['Low', 'Medium', 'High'];
 const form = useForm({
-    sensor_id: '', // Dropdown selection
+    sensor_id: '',
     type: '',
-    severity: '',
-    message: '',
+    messages: [{ severity: '', message: '' }] // Array to store multiple messages
 });
+
 
 const submit = () => {
     form.post(route("alerts.store"));
 };
+
+const addMessage = () => {
+    form.messages.push({ severity: '', message: '' });
+};
+
+const removeMessage = (index) => {
+    form.messages.splice(index, 1);
+};
+
 </script>
 
 <template>
-    <Head title="Create Alert" />
-
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Alert</h2>
@@ -51,7 +58,6 @@ const submit = () => {
                             <InputError class="mt-2" :message="form.errors.sensor_id" />
                         </div>
 
-                        <!-- Type Input -->
                         <div>
                             <InputLabel for="type" value="Type" />
                             <TextInput
@@ -64,30 +70,33 @@ const submit = () => {
                             <InputError class="mt-2" :message="form.errors.type" />
                         </div>
 
-                        <!-- Severity Dropdown -->
-                        <div>
-                            <InputLabel for="severity" value="Severity" />
+                        <!-- Dynamic Messages Section -->
+                        <div v-for="(msg, index) in form.messages" :key="index">
+                            <InputLabel :for="`severity-${index}`" value="Severity" />
                             <NewDropdown
-                                id="severity"
+                                :id="`severity-${index}`"
                                 class="mt-1 block w-full"
-                                v-model="form.severity"
+                                v-model="msg.severity"
                                 :options="severityOptions"
                             />
-                            <InputError class="mt-2" :message="form.errors.severity" />
-                        </div>
+                            <InputError class="mt-2" :message="form.errors[`messages.${index}.severity`]"/>
 
-                        <!-- Message Input -->
-                        <div>
-                            <InputLabel for="message" value="Message" />
+                            <InputLabel :for="`message-${index}`" value="Message" class="mt-4"/>
                             <TextInput
-                                id="message"
+                                :id="`message-${index}`"
                                 type="text"
                                 class="mt-1 block w-full"
-                                v-model="form.message"
-                                required 
+                                v-model="msg.message"
+                                required
                             />
-                            <InputError class="mt-2" :message="form.errors.message" />
+                            <InputError class="mt-2" :message="form.errors[`messages.${index}.message`]"/>
+
+                            <!-- Remove Message Button -->
+                            <button type="button" @click="removeMessage(index)" class="text-red-500 mt-2">Remove</button>
                         </div>
+
+                        <!-- Add More Messages -->
+                        <button type="button" @click="addMessage" class="text-blue-500 mt-4">+ Add More Messages</button>
 
                         <div class="flex items-center gap-4">
                             <PrimaryButton :disabled="form.processing">Save</PrimaryButton>

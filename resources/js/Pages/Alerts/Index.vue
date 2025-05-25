@@ -55,12 +55,7 @@ const deleteTrade = (id) => {
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Type</th>
-                        <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            SEVERITY</th>
-                        <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            MESSAGE</th>
+                       
                         
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -78,12 +73,8 @@ const deleteTrade = (id) => {
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ entry.type }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.severity }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ entry.message }}</p>
-                        </td>
+                      
+                       
                         
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <PrimaryLink v-if="entry.deleted_at == null && $page.props.user.permissions.includes('edit alert') " :href="route('alerts.edit', { 'id': entry.id })"

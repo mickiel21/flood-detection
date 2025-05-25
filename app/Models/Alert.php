@@ -20,6 +20,14 @@ class Alert extends Model
         return $this->belongsTo(Sensor::class);
     }
 
+   public function messages()
+    {
+        return $this->hasMany(Message::class, 'sensor_id', 'sensor_id'); // Link via sensor_id
+    }
+
+
+
+
     /**
      * Filter to fetch the trashed items
      *

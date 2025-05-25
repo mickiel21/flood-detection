@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Alert;
 use Inertia\Inertia;
 use App\Models\Sensor;
+use App\Models\Message;
+
 class AlertController extends Controller
 {
     public function __construct(){
@@ -52,12 +54,25 @@ class AlertController extends Controller
         $validatedData = $request->validate([
             'sensor_id' => 'required|exists:sensors,id',
             'type' => 'required|string|max:255',
-            'severity' => 'required|in:Low,Medium,High,Critical',
-            'message' => 'required|string',
+            'messages' => 'required|array',
+            'messages.*.severity' => 'required|in:Low,Medium,High,Critical',
+            'messages.*.message' => 'required|string'
         ]);
 
-        // Create alert record
-        Alert::create($validatedData);
+        // Create Alert (Only storing sensor_id and type)
+         Alert::create([
+            'sensor_id' => $validatedData['sensor_id'],
+            'type' => $validatedData['type']
+        ]);
+
+        // Store each message separately
+        foreach ($validatedData['messages'] as $msg) {
+            Message::create([
+                'sensor_id' => $validatedData['sensor_id'],
+                'severity' => $msg['severity'],
+                'message' => $msg['message']
+            ]);
+        }
 
         return redirect()->route('alerts.index')->with('message', 'Alert created successfully!');
     }
@@ -81,9 +96,8 @@ class AlertController extends Controller
     {
         // Fetch all sensors for the dropdown
         $sensors = Sensor::select('id', 'name', 'location')->get();
-
         return Inertia::render('Alerts/Edit', [
-            'alert' => $alert->load('sensor'),
+            'alert' => $alert->load(['sensor', 'messages']),
             'sensors' => $sensors,
         ]);
     }
@@ -92,18 +106,42 @@ class AlertController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Alert $alert)
+    public function update(Request $request, $id)
     {
         // Validate input
         $validatedData = $request->validate([
             'sensor_id' => 'required|exists:sensors,id',
             'type' => 'required|string|max:255',
-            'severity' => 'required|in:Low,Medium,High,Critical',
-            'message' => 'required|string',
+            'messages' => 'required|array',
+            'messages.*.id' => 'nullable|exists:messages,id', // Existing messages can have IDs
+            'messages.*.severity' => 'required|in:Low,Medium,High,Critical',
+            'messages.*.message' => 'required|string'
         ]);
 
-        // Update alert record
-        $alert->update($validatedData);
+        // Find alert and update its sensor association
+        $alert = Alert::findOrFail($id);
+        $alert->update([
+            'sensor_id' => $validatedData['sensor_id'],
+            'type' => $validatedData['type']
+        ]);
+
+        // Handle message updates
+        foreach ($validatedData['messages'] as $msg) {
+            if (isset($msg['id'])) {
+                // Update existing message
+                Message::where('id', $msg['id'])->update([
+                    'severity' => $msg['severity'],
+                    'message' => $msg['message']
+                ]);
+            } else {
+                // Create a new message
+                Message::create([
+                    'sensor_id' => $validatedData['sensor_id'],
+                    'severity' => $msg['severity'],
+                    'message' => $msg['message']
+                ]);
+            }
+        }
 
         return redirect()->route('alerts.index')->with('message', 'Alert updated successfully!');
     }
