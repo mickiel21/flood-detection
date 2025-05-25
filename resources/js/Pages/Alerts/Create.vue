@@ -29,6 +29,12 @@ const removeMessage = (index) => {
     form.messages.splice(index, 1);
 };
 
+const filteredSeverityOptions = (index) => {
+    return severityOptions.filter(option => {
+        return !form.messages.some((msg, i) => msg.severity === option && i !== index);
+    });
+};
+
 </script>
 
 <template>
@@ -77,7 +83,7 @@ const removeMessage = (index) => {
                                 :id="`severity-${index}`"
                                 class="mt-1 block w-full"
                                 v-model="msg.severity"
-                                :options="severityOptions"
+                                :options="filteredSeverityOptions(index)"
                             />
                             <InputError class="mt-2" :message="form.errors[`messages.${index}.severity`]"/>
 

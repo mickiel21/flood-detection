@@ -55,7 +55,7 @@ import {
 } from 'chart.js'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head,router } from '@inertiajs/vue3';
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref, onMounted,nextTick  } from 'vue';
 
 
 const props = defineProps({
@@ -89,6 +89,7 @@ const data = reactive({
     }]
 });
 
+
 const options = reactive({
     responsive: true,
     maintainAspectRatio: false,
@@ -101,6 +102,26 @@ const options = reactive({
         y: { title: { display: true, text: 'Water Level (cm)' }, beginAtZero: true }
     }
 });
+
+// onMounted(() => {
+//   Echo.channel('water-level')
+//     .listen('.WaterLevel', (event) => {
+//        updateChart(event.message);
+//     });
+// });
+// const updateChart = (newWaterLevel) => {
+//     const currentTime = new Date().toLocaleTimeString();
+
+//     // Limit data points to prevent excessive updates
+//     if (data.labels.length > 50) {
+//         data.labels.shift(); // Remove oldest entry
+//         data.datasets[0].data.shift(); // Remove matching data point
+//     }
+
+//     // Append new values
+//     data.labels.push(currentTime);
+//     data.datasets[0].data.push(newWaterLevel);
+// };
 
 
 </script>

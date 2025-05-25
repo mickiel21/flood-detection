@@ -21,7 +21,7 @@
 
             <div class="mt-3">
                 <InputLabel for="phone" value="Phone" />
-                <TextInput id="phone" type="tel" class="mt-1 block w-full"   v-model="form.phone" required autofocus autocomplete="phone"  placeholder="+639123456789" />
+                <TextInput id="phone" type="tel" class="mt-1 block w-full"   v-model="form.phone" required autofocus autocomplete="phone"  placeholder="09123456789" />
                 <InputError class="mt-2" :message="form.errors.phone" />
             </div>
 
