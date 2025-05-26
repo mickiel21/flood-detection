@@ -30,7 +30,7 @@ class UserController extends Controller
             ->orderBy('id', 'ASC')
             ->whereNull('deleted_at')
             ->filter($request->only('filter'))
-            ->paginate(5)
+            ->paginate(10)
             ->withQueryString();
       
         return Inertia::render('Users/Index', [

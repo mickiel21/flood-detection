@@ -16,10 +16,26 @@ class FloodDetectionController extends Controller
 {
   
 
+   
+protected function roundWaterLevel($water_level) {
+    // Specific rounding conditions
+    if ($water_level >= 19.10 && $water_level <= 19.90) {
+        return 19;
+    } elseif ($water_level >= 12.10 && $water_level <= 12.90) {
+        return round($water_level);
+    } elseif ($water_level >= 6.10 && $water_level <= 6.90) {
+        return round($water_level);
+    }
+    
+    // Default rounding for other values
+    return round($water_level);
+}
+
+
 public function store(Request $request){
     Log::info("Water Level Value: " . $request->water_level);
 
-    event(new WaterLevelEvents($request->water_level));
+    //event(new WaterLevelEvents($request->water_level));
 
     WaterLevel::create([
         'sensor_id' => 1,
@@ -29,28 +45,31 @@ public function store(Request $request){
     ]);
 
     $users = User::all();
-    
-    // Get the last recorded water level from cache
-    $lastWaterLevel = Cache::get('last_water_level', null);
 
-    // Only send notification if there's a significant change **AND** it has been at least 5 seconds
-    if ($lastWaterLevel === null || abs($request->water_level - $lastWaterLevel) >= 1) {
-        // Store the new water level in cache with a **5-second expiration**
-        Cache::put('last_water_level', $request->water_level, now()->addSeconds(15));
+    // Define notification levels
+    $alertLevels = [
+        6  => 'Low',
+        12 => 'Medium',
+        19 => 'High'
+    ];
 
-        // Notify based on water level
-        if ($request->water_level = 6) {
+    $waterLevel = $this->roundWaterLevel($request->water_level);
+
+    // Check if the water level matches a defined alert level
+    if (array_key_exists($waterLevel, $alertLevels)) {
+        $cacheKey = "last_notification_{$alertLevels[$waterLevel]}";
+
+        // Get the last notification time from cache
+        $lastNotificationTime = Cache::get($cacheKey, null);
+
+        // Only send notification if **5 minutes have passed**
+        if ($lastNotificationTime === null || now()->diffInMinutes($lastNotificationTime) >= 5) {
             foreach ($users as $user) {
-                $user->notify(new FloodAlertNotification('Low'));
+                $user->notify(new FloodAlertNotification($alertLevels[$waterLevel]));
             }
-        } elseif ($request->water_level = 12) {
-            foreach ($users as $user) {
-                $user->notify(new FloodAlertNotification('Medium'));
-            }
-        } elseif ($request->water_level = 19) {
-            foreach ($users as $user) {
-                $user->notify(new FloodAlertNotification('High'));
-            }
+
+            // Store the last notification time in cache
+            Cache::put($cacheKey, now(), now()->addMinutes(5));
         }
     }
 
@@ -68,7 +87,7 @@ public function store(Request $request){
    }
 
    public function testSmsNotification(Request $request){
-    $user = User::find(2);
+    $user = User::find(8);
     $user->notify(new SMSNotification($request->severity));
     echo 'sms working';
    }
