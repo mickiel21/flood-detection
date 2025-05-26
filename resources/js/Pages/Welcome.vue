@@ -12,6 +12,7 @@ defineProps({
         type: Boolean,
     },
 });
+document.body.style.backgroundImage = 'none'
 </script>
 
 <template>
