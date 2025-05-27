@@ -16,16 +16,16 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Admin',
-                'email' => 'mickieloraa21@gmail.com',
+                'email' => 'miguelitscastejon04@gmail.com',
                 'password' => 'password',
-                'phone' => '639159568109',
+                'phone' => '639919836346',
                 'role' => 'admin',
             ],
             [
                 'name' => 'authority',
-                'email' => 'miguelitscastejon04@gmail.com',
+                'email' => 'symon0717cruz@gmail.com',
                 'password' => 'password',
-                'phone' => '639919836346',
+                'phone' => '639761602021',
                 'role' => 'authority',
             ],
 
